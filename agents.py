@@ -1,6 +1,7 @@
 import os
 import streamlit as st
 from dotenv import load_dotenv
+from langchain_core.tools import tool
 # Re-import the specific library for Google Gemini
 from langchain_google_genai import ChatGoogleGenerativeAI
 from crewai import Agent, Task, Crew, Process
@@ -223,7 +224,12 @@ class WebsiteScraperInput(BaseModel):
 # With the @tool decorator, a simple function becomes a powerful CrewAI tool.
 # The docstring is CRITICAL here, as it's what tells the LLM
 # how the tool works, what it does, and what inputs it needs.
-@tool("Website Scraper Tool")
+# --- 4. Define The "Gig Architect" Agent & Its Tool (WORKAROUND FOR OLDER VERSIONS) ---
+
+# Instead of 'from crewai_tools', we import 'tool' from 'langchain.tools'.
+# This decorator should be available in the version of LangChain your CrewAI install is using.
+
+@tool
 def website_scraper(url: str) -> str:
     """
     Scrapes the content of a given URL and returns it as a string.
@@ -238,7 +244,8 @@ def website_scraper(url: str) -> str:
     return "Scraped Content: This project requires translating a JSON file from English to Spanish. The file is located at 'data/en.json'."
 
 
-st.success("✅ **Tools:** WebsiteScraperTool created successfully using the @tool decorator.")
+st.success("✅ **Tools:** WebsiteScraperTool created successfully using the langchain @tool decorator.")
+
 
 
 # --- Define the Gig Architect Agent ---
